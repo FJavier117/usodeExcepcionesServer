@@ -1,10 +1,14 @@
 package client;
 
 import conexion.Conexion;
-import java.io.DataOutputStream;
-import java.io.IOException;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Cliente extends Conexion {
+
+    String mensaje = null;
 
     public Cliente() throws IOException {
         super("cliente");
@@ -14,18 +18,22 @@ public class Cliente extends Conexion {
     {
         try {
             //Flujo de datos hacia el servidor
-            salidaServidor = new DataOutputStream(socket.getOutputStream());
-
-            //Se enviarán dos mensajes
-            for (int i = 0; i < 3; i++) {
-                //Se escribe en el servidor usando su flujo de datos
-                salidaServidor.writeUTF("Este es el mensaje número " + (i + 1) + "\n");
-            }
-
+            salidaC = new DataOutputStream (socket.getOutputStream());
+            //Se enviarán mensajes
+            addMensaje();
+            salidaC.writeUTF("Este es el mensaje número " + mensaje);
+            entradaC = new DataInputStream(socket.getInputStream());
+            System.out.println(entradaC.readUTF());
             socket.close();//Fin de la conexión
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void addMensaje(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingresa mensaje a enviar: ");
+        mensaje = scanner.next();
     }
 }
